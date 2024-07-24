@@ -1,5 +1,6 @@
 const form = document.querySelector('#item-form');
 const ul = document.querySelector('.items');
+const clearBtn = document.querySelector('.btn-clear');
 
 function addItem(e) {
   e.preventDefault();
@@ -43,5 +44,23 @@ function makeIcon(classes) {
   return icon;
 }
 
+// Function to check if there is a click on delete icon and then delete
+function removeItem(e) {
+  if (e.target.tagName !== 'I') {
+    return;
+  }
+  // Remove li: parent of icon is button and parent of button is li
+  e.target.parentElement.parentElement.remove();
+}
+
+// Function to clear the item list
+function clearAll(e) {
+  while (ul.firstChild) {
+    ul.firstChild.remove();
+  }
+}
+
 // Event Listners
 form.addEventListener('submit', addItem);
+ul.addEventListener('click', removeItem);
+clearBtn.addEventListener('click', clearAll);
