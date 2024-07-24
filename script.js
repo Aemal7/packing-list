@@ -47,7 +47,7 @@ function makeIcon(classes) {
 // Function to check if there is a click on delete icon and then delete
 function removeItem(e) {
   // Delete button press check: parent of delete icon is delete button
-  if (e.target.parentElement.classList[0] !== 'remove-item') {
+  if (!e.target.parentElement.classList.contains('remove-item')) {
     return;
   }
 
