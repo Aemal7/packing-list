@@ -14,8 +14,8 @@ function addItem(e) {
     return;
   }
 
-  filter.classList.toggle('hidden', false);
-  clearBtn.classList.toggle('hidden', false);
+  // Show filter input and clear all button; list no more empty
+  toggleUI(false);
 
   ul.appendChild(makeListItem(content));
   form.reset();
@@ -59,10 +59,8 @@ function removeItem(e) {
   li.remove();
   console.log('item deleted succesfully!');
 
-  if (!ul.firstElementChild) {
-    filter.classList.toggle('hidden', true);
-    clearBtn.classList.toggle('hidden', true);
-  }
+  // Hide filter input and clear all button if list empty
+  checkUI();
 }
 
 // Function to clear the item list
@@ -72,8 +70,23 @@ function clearAll(e) {
   }
   console.log('all items deleted!');
 
-  filter.classList.toggle('hidden', true);
-  clearBtn.classList.toggle('hidden', true);
+  // Hide filter input and clear all button
+  toggleUI(true);
+}
+
+// // Function to hide filter input and clear all button if empty
+function checkUI() {
+  if (!ul.firstElementChild) {
+    toggleUI(true);
+  } else {
+    toggleUI(false);
+  }
+}
+
+// Function to hide or show filter input and clear button
+function toggleUI(bool) {
+  filter.classList.toggle('hidden', bool);
+  clearBtn.classList.toggle('hidden', bool);
 }
 
 // Event Listners
