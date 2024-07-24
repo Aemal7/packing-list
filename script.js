@@ -76,11 +76,7 @@ function clearAll(e) {
 
 // // Function to hide filter input and clear all button if empty
 function checkUI() {
-  if (!ul.firstElementChild) {
-    toggleUI(true);
-  } else {
-    toggleUI(false);
-  }
+  !ul.firstElementChild ? toggleUI(true) : toggleUI(false);
 }
 
 // Function to hide or show filter input and clear button
