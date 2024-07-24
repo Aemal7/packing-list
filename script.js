@@ -1,6 +1,7 @@
 const form = document.querySelector('#item-form');
 const ul = document.querySelector('.items');
 const clearBtn = document.querySelector('.btn-clear');
+const filter = document.querySelector('.filter');
 
 function addItem(e) {
   e.preventDefault();
@@ -12,6 +13,9 @@ function addItem(e) {
     alert('No item entered!');
     return;
   }
+
+  filter.classList.toggle('hidden', false);
+  clearBtn.classList.toggle('hidden', false);
 
   ul.appendChild(makeListItem(content));
   form.reset();
@@ -53,6 +57,12 @@ function removeItem(e) {
 
   const li = e.target.parentElement.parentElement;
   li.remove();
+  console.log('item deleted succesfully!');
+
+  if (!ul.firstElementChild) {
+    filter.classList.toggle('hidden', true);
+    clearBtn.classList.toggle('hidden', true);
+  }
 }
 
 // Function to clear the item list
@@ -60,6 +70,10 @@ function clearAll(e) {
   while (ul.firstChild) {
     ul.firstChild.remove();
   }
+  console.log('all items deleted!');
+
+  filter.classList.toggle('hidden', true);
+  clearBtn.classList.toggle('hidden', true);
 }
 
 // Event Listners

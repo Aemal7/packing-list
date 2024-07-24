@@ -112,6 +112,11 @@ header h1 {
   flex-wrap: wrap;
 }
 
+/* For hidding elements*/
+.hidden {
+  display: none;
+}
+
 .items li {
   display: flex;
   justify-content: space-between;
