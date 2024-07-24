@@ -46,11 +46,13 @@ function makeIcon(classes) {
 
 // Function to check if there is a click on delete icon and then delete
 function removeItem(e) {
-  if (e.target.tagName !== 'I') {
+  // Delete button press check: parent of delete icon is delete button
+  if (e.target.parentElement.classList[0] !== 'remove-item') {
     return;
   }
-  // Remove li: parent of icon is button and parent of button is li
-  e.target.parentElement.parentElement.remove();
+
+  const li = e.target.parentElement.parentElement;
+  li.remove();
 }
 
 // Function to clear the item list
