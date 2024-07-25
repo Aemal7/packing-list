@@ -4,7 +4,7 @@ const clearBtn = document.querySelector('.btn-clear');
 const filterDiv = document.querySelector('.filter');
 const filterInput = filterDiv.querySelector('.form-input-filter');
 
-function addItem(e) {
+function onAddItemSubmit(e) {
   e.preventDefault();
   const formData = new FormData(form);
   const content = formData.get('item');
@@ -18,9 +18,16 @@ function addItem(e) {
   // Show filter input and clear all button; list no more empty
   toggleUI(false);
 
-  ul.appendChild(makeListItem(content));
+  addItemToDOM(content);
+  addItemToStorage(content);
+
   form.reset();
-  console.log('Item added succesfully!');
+}
+
+// Function to add new item to the DOM
+function addItemToDOM(content) {
+  ul.appendChild(makeListItem(content));
+  console.log('Item added to DOM succesfully!');
 }
 
 // Function to create list item to be added
@@ -47,6 +54,20 @@ function makeIcon(classes) {
   icon.className = classes;
 
   return icon;
+}
+
+// Funtion to store new item into local storage
+function addItemToStorage(content) {
+  // Get from local storage and parse
+  let itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+
+  // Create new array if no items on storage else push to array
+  !itemsFromStorage
+    ? ((itemsFromStorage = []), itemsFromStorage.push(content))
+    : itemsFromStorage.push(content);
+
+  // Convert to string and set to local storage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 // Function to check if there is a click on delete icon and then delete
@@ -79,20 +100,19 @@ function clearAll(e) {
 function filterItems(e) {
   const listItems = ul.querySelectorAll('li');
   // Get texts of all items in lower case
-  const lowerCaseItemText = Array.from(listItems).map((item) =>
+  const lowerCaseItemsText = Array.from(listItems).map((item) =>
     item.innerText.toLowerCase()
   );
   // Filter texts according to input
-  const filteredItemTexts = lowerCaseItemText.filter((itemText) =>
+  const filteredItemTexts = lowerCaseItemsText.filter((itemText) =>
     itemText.includes(e.target.value.toLowerCase())
   );
-  // Hide items that do not have tne input text
+  // Hide items that do not have the input text
   listItems.forEach((item) => {
     !filteredItemTexts.includes(item.innerText.toLowerCase())
       ? (item.style.display = 'none')
-      : (item.style.display = 'block');
+      : (item.style.display = 'flex');
   });
-  console.log(filteredItemTexts);
 }
 
 // // Function to hide filter input and clear all button if empty
@@ -107,7 +127,9 @@ function toggleUI(bool) {
 }
 
 // Event Listners
-form.addEventListener('submit', addItem);
+form.addEventListener('submit', onAddItemSubmit);
 ul.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearAll);
 filterInput.addEventListener('input', filterItems);
+
+checkUI();
