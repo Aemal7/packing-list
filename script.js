@@ -1,7 +1,8 @@
 const form = document.querySelector('#item-form');
 const ul = document.querySelector('.items');
 const clearBtn = document.querySelector('.btn-clear');
-const filter = document.querySelector('.filter');
+const filterDiv = document.querySelector('.filter');
+const filterInput = filterDiv.querySelector('.form-input-filter');
 
 function addItem(e) {
   e.preventDefault();
@@ -74,6 +75,26 @@ function clearAll(e) {
   toggleUI(true);
 }
 
+// Function that filters items based on input
+function filterItems(e) {
+  const listItems = ul.querySelectorAll('li');
+  // Get texts of all items in lower case
+  const lowerCaseItemText = Array.from(listItems).map((item) =>
+    item.innerText.toLowerCase()
+  );
+  // Filter texts according to input
+  const filteredItemTexts = lowerCaseItemText.filter((itemText) =>
+    itemText.includes(e.target.value.toLowerCase())
+  );
+  // Hide items that do not have tne input text
+  listItems.forEach((item) => {
+    !filteredItemTexts.includes(item.innerText.toLowerCase())
+      ? (item.style.display = 'none')
+      : (item.style.display = 'block');
+  });
+  console.log(filteredItemTexts);
+}
+
 // // Function to hide filter input and clear all button if empty
 function checkUI() {
   !ul.firstElementChild ? toggleUI(true) : toggleUI(false);
@@ -81,7 +102,7 @@ function checkUI() {
 
 // Function to hide or show filter input and clear button
 function toggleUI(bool) {
-  filter.classList.toggle('hidden', bool);
+  filterDiv.classList.toggle('hidden', bool);
   clearBtn.classList.toggle('hidden', bool);
 }
 
@@ -89,3 +110,4 @@ function toggleUI(bool) {
 form.addEventListener('submit', addItem);
 ul.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearAll);
+filterInput.addEventListener('input', filterItems);
