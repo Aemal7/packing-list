@@ -4,6 +4,13 @@ const clearBtn = document.querySelector('.btn-clear');
 const filterDiv = document.querySelector('.filter');
 const filterInput = filterDiv.querySelector('.form-input-filter');
 
+// Function that loads all local storage items to the DOM
+function displayItems() {
+  items = getItemsFromStorage();
+  items.forEach((item) => addItemToDOM(item));
+  checkUI();
+}
+
 function onAddItemSubmit(e) {
   e.preventDefault();
   const formData = new FormData(form);
@@ -59,15 +66,23 @@ function makeIcon(classes) {
 // Funtion to store new item into local storage
 function addItemToStorage(content) {
   // Get from local storage and parse
-  let itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  let itemsFromStorage = getItemsFromStorage();
 
   // Create new array if no items on storage else push to array
-  !itemsFromStorage
-    ? ((itemsFromStorage = []), itemsFromStorage.push(content))
-    : itemsFromStorage.push(content);
+  itemsFromStorage.push(content);
 
   // Convert to string and set to local storage
   localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
+function getItemsFromStorage() {
+  // Get from local storage and parse
+  let itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+
+  // Create new array if no items on storage
+  !itemsFromStorage && (itemsFromStorage = []);
+
+  return itemsFromStorage;
 }
 
 // Function to check if there is a click on delete icon and then delete
@@ -77,23 +92,36 @@ function removeItem(e) {
     return;
   }
 
+  // Send the contents of item to remove from storage function
+  removeItemFromStorage(e.target.parentElement.parentElement.innerText);
   const li = e.target.parentElement.parentElement;
   li.remove();
+
   console.log('item deleted succesfully!');
 
   // Hide filter input and clear all button if list empty
   checkUI();
 }
 
+// Function to remove a particular item from storage
+function removeItemFromStorage(content) {
+  items = getItemsFromStorage();
+  items.splice(items.indexOf(content), 1);
+  localStorage.setItem('items', JSON.stringify(items));
+}
+
 // Function to clear the item list
 function clearAll(e) {
-  while (ul.firstChild) {
-    ul.firstChild.remove();
-  }
-  console.log('all items deleted!');
+  if (confirm('Do you want to delete all items?')) {
+    while (ul.firstChild) {
+      ul.firstChild.remove();
+    }
 
-  // Hide filter input and clear all button
-  toggleUI(true);
+    localStorage.clear();
+    console.log('all items deleted!'); // Hide filter input and clear all button
+
+    toggleUI(true);
+  }
 }
 
 // Function that filters items based on input
@@ -126,10 +154,14 @@ function toggleUI(bool) {
   clearBtn.classList.toggle('hidden', bool);
 }
 
-// Event Listners
-form.addEventListener('submit', onAddItemSubmit);
-ul.addEventListener('click', removeItem);
-clearBtn.addEventListener('click', clearAll);
-filterInput.addEventListener('input', filterItems);
+// Initialize app
+function init() {
+  // Event Listners
+  form.addEventListener('submit', onAddItemSubmit);
+  ul.addEventListener('click', removeItem);
+  clearBtn.addEventListener('click', clearAll);
+  filterInput.addEventListener('input', filterItems);
+  document.addEventListener('DOMContentLoaded', displayItems);
+}
 
-checkUI();
+init();
