@@ -85,6 +85,10 @@ function getItemsFromStorage() {
   return itemsFromStorage;
 }
 
+function onClickItem(e) {
+  removeItem(e);
+}
+
 // Function to check if there is a click on delete icon and then delete
 function removeItem(e) {
   // Delete button press check: parent of delete icon is delete button
@@ -158,7 +162,7 @@ function toggleUI(bool) {
 function init() {
   // Event Listners
   form.addEventListener('submit', onAddItemSubmit);
-  ul.addEventListener('click', removeItem);
+  ul.addEventListener('click', onClickItem);
   clearBtn.addEventListener('click', clearAll);
   filterInput.addEventListener('input', filterItems);
   document.addEventListener('DOMContentLoaded', displayItems);
