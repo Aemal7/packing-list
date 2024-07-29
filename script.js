@@ -86,19 +86,18 @@ function getItemsFromStorage() {
 }
 
 function onClickItem(e) {
-  removeItem(e);
+  // Delete button press check: parent of delete icon is delete button
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    // Send list item to removeItem function
+    removeItem(e.target.parentElement.parentElement);
+  }
 }
 
 // Function to check if there is a click on delete icon and then delete
-function removeItem(e) {
-  // Delete button press check: parent of delete icon is delete button
-  if (!e.target.parentElement.classList.contains('remove-item')) {
-    return;
-  }
-
+function removeItem(li) {
   // Send the contents of item to remove from storage function
-  removeItemFromStorage(e.target.parentElement.parentElement.innerText);
-  const li = e.target.parentElement.parentElement;
+  removeItemFromStorage(li.innerText);
+  // Remove item from DOM
   li.remove();
 
   console.log('item deleted succesfully!');
@@ -109,7 +108,7 @@ function removeItem(e) {
 
 // Function to remove a particular item from storage
 function removeItemFromStorage(content) {
-  items = getItemsFromStorage();
+  const items = getItemsFromStorage();
   items.splice(items.indexOf(content), 1);
   localStorage.setItem('items', JSON.stringify(items));
 }
@@ -121,7 +120,8 @@ function clearAll(e) {
       ul.firstChild.remove();
     }
 
-    localStorage.clear();
+    // Clear from local storage
+    localStorage.removeItem('items');
     console.log('all items deleted!'); // Hide filter input and clear all button
 
     toggleUI(true);
