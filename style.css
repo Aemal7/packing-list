@@ -28,6 +28,11 @@ header h1 {
   margin-left: 10px;
 }
 
+header img {
+  width: 10%;
+  height: auto;
+}
+
 .container {
   max-width: 500px;
   margin: 30px auto;
