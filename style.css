@@ -24,7 +24,7 @@ header {
 }
 
 header h1 {
-  font-weight: 300;
+  font-weight: 550;
   margin-left: 10px;
 }
 
@@ -126,7 +126,7 @@ header img {
   display: flex;
   justify-content: space-between;
   width: 45%;
-  border: 1px solid #ccc;
+  border: 3px solid #ccc;
   border-radius: 5px;
   padding: 10px 15px;
   margin: 0 5px 20px;
