@@ -6,8 +6,6 @@ const filterDiv = document.querySelector('.filter');
 const filterInput = filterDiv.querySelector('.form-input-filter');
 const inputField = form.querySelector('.form-input');
 
-let itemToBeEdited = null;
-
 // Function that loads all local storage items to the DOM
 function displayItems() {
   items = getItemsFromStorage();
@@ -34,12 +32,13 @@ function onItemSubmit(e) {
     addItemToStorage(content);
   } else {
     // Edit Item
+    const itemToBeEdited = ul.querySelector('.edit-mode');
+
     // Edit item in DOM
     const oldContent = itemToBeEdited.firstChild.textContent.trim();
     itemToBeEdited.firstChild.replaceWith(content);
 
     editItemInStorage(content, oldContent);
-    itemToBeEdited = null;
 
     setAddUI();
   }
@@ -153,12 +152,10 @@ function onClickItem(e) {
     // Set edit mode if it is not already in edit mode
     if (!Array.from(e.target.classList).includes('edit-mode')) {
       setEditUI(e.target);
-      itemToBeEdited = e.target;
     }
     // Take out of edit mode if already in edit mode
     else {
       setAddUI();
-      itemToBeEdited = null;
     }
   }
 }
