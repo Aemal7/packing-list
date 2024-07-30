@@ -1,8 +1,12 @@
 const form = document.querySelector('#item-form');
 const ul = document.querySelector('.items');
 const clearBtn = document.querySelector('.btn-clear');
+const submitBtn = document.querySelector('.btn');
 const filterDiv = document.querySelector('.filter');
 const filterInput = filterDiv.querySelector('.form-input-filter');
+const inputField = document.querySelector('.form-input');
+
+let itemToBeEdited;
 
 // Function that loads all local storage items to the DOM
 function displayItems() {
@@ -11,7 +15,7 @@ function displayItems() {
   checkUI();
 }
 
-function onAddItemSubmit(e) {
+function onItemSubmit(e) {
   e.preventDefault();
   const formData = new FormData(form);
   const content = formData.get('item');
@@ -22,11 +26,22 @@ function onAddItemSubmit(e) {
     return;
   }
 
-  // Show filter input and clear all button; list no more empty
-  toggleUI(false);
+  if (submitBtn.lastChild.textContent.trim() == 'Add Item') {
+    // Add item
+    toggleUI(false);
 
-  addItemToDOM(content);
-  addItemToStorage(content);
+    addItemToDOM(content);
+    addItemToStorage(content);
+  } else {
+    // Edit Item
+    // Edit item in DOM
+    const oldContent = itemToBeEdited.firstChild.textContent.trim();
+    itemToBeEdited.firstChild.replaceWith(content);
+    editItemInStorage(content, oldContent);
+
+    setAddUI();
+  }
+  // Show filter input and clear all button; list no more empty
 
   form.reset();
 }
@@ -85,14 +100,6 @@ function getItemsFromStorage() {
   return itemsFromStorage;
 }
 
-function onClickItem(e) {
-  // Delete button press check: parent of delete icon is delete button
-  if (e.target.parentElement.classList.contains('remove-item')) {
-    // Send list item to removeItem function
-    removeItem(e.target.parentElement.parentElement);
-  }
-}
-
 // Function to check if there is a click on delete icon and then delete
 function removeItem(li) {
   // Send the contents of item to remove from storage function
@@ -128,6 +135,24 @@ function clearAll(e) {
   }
 }
 
+function editItemInStorage(content, oldContent) {
+  const items = getItemsFromStorage();
+  items[items.indexOf(oldContent)] = content;
+  localStorage.setItem('items', JSON.stringify(items));
+}
+
+function onClickItem(e) {
+  // Delete button press check: parent of delete icon is delete button
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    // Send list item to removeItem function
+    removeItem(e.target.parentElement.parentElement);
+  }
+  if (e.target.tagName === 'LI') {
+    setEditUI(e.target.innerText);
+    itemToBeEdited = e.target;
+  }
+}
+
 // Function that filters items based on input
 function filterItems(e) {
   const listItems = ul.querySelectorAll('li');
@@ -158,10 +183,19 @@ function toggleUI(bool) {
   clearBtn.classList.toggle('hidden', bool);
 }
 
+function setEditUI(content) {
+  inputField.value = content;
+  submitBtn.lastChild.textContent = ' Edit Item';
+}
+
+function setAddUI() {
+  submitBtn.lastChild.textContent = ' Add Item';
+}
+
 // Initialize app
 function init() {
   // Event Listners
-  form.addEventListener('submit', onAddItemSubmit);
+  form.addEventListener('submit', onItemSubmit);
   ul.addEventListener('click', onClickItem);
   clearBtn.addEventListener('click', clearAll);
   filterInput.addEventListener('input', filterItems);
