@@ -28,10 +28,6 @@ function onItemSubmit(e) {
 
   if (submitBtn.lastChild.textContent.trim() == 'Add Item') {
     // Add item
-    if (checkIfItemExists(content)) {
-      alert('Item already exists!');
-      return;
-    }
 
     toggleUI(false);
 
@@ -167,11 +163,6 @@ function onClickItem(e) {
   }
 }
 
-function checkIfItemExists(content) {
-  const items = getItemsFromStorage();
-  return items.includes(content);
-}
-
 // Function that filters items based on input
 function filterItems(e) {
   const listItems = ul.querySelectorAll('li');
@@ -237,5 +228,3 @@ function init() {
 }
 
 init();
-
-// edit duplicate check issue. we can set duplicate item through edit
