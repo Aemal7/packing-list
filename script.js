@@ -1,12 +1,12 @@
 const form = document.querySelector('#item-form');
 const ul = document.querySelector('.items');
 const clearBtn = document.querySelector('.btn-clear');
-const submitBtn = document.querySelector('.btn');
+const submitBtn = form.querySelector('.btn');
 const filterDiv = document.querySelector('.filter');
 const filterInput = filterDiv.querySelector('.form-input-filter');
-const inputField = document.querySelector('.form-input');
+const inputField = form.querySelector('.form-input');
 
-let itemToBeEdited;
+let itemToBeEdited = null;
 
 // Function that loads all local storage items to the DOM
 function displayItems() {
@@ -37,7 +37,9 @@ function onItemSubmit(e) {
     // Edit item in DOM
     const oldContent = itemToBeEdited.firstChild.textContent.trim();
     itemToBeEdited.firstChild.replaceWith(content);
+
     editItemInStorage(content, oldContent);
+    itemToBeEdited = null;
 
     setAddUI();
   }
@@ -148,8 +150,16 @@ function onClickItem(e) {
     removeItem(e.target.parentElement.parentElement);
   }
   if (e.target.tagName === 'LI') {
-    setEditUI(e.target.innerText);
-    itemToBeEdited = e.target;
+    // Set edit mode if it is not already in edit mode
+    if (!Array.from(e.target.classList).includes('edit-mode')) {
+      setEditUI(e.target);
+      itemToBeEdited = e.target;
+    }
+    // Take out of edit mode if already in edit mode
+    else {
+      setAddUI();
+      itemToBeEdited = null;
+    }
   }
 }
 
@@ -183,13 +193,28 @@ function toggleUI(bool) {
   clearBtn.classList.toggle('hidden', bool);
 }
 
-function setEditUI(content) {
-  inputField.value = content;
+function setEditUI(li) {
+  const items = ul.querySelectorAll('li');
+  items.forEach((li) => li.classList.remove('edit-mode'));
+
+  inputField.value = li.innerText;
+
+  li.classList.add('edit-mode');
+
+  submitBtn.firstElementChild.className = 'fa-solid fa-pen';
   submitBtn.lastChild.textContent = ' Edit Item';
+  submitBtn.style.backgroundColor = '#228B22';
 }
 
 function setAddUI() {
+  const items = ul.querySelectorAll('li');
+  items.forEach((li) => li.classList.remove('edit-mode'));
+
+  submitBtn.firstElementChild.className = 'fa-solid fa-plus';
   submitBtn.lastChild.textContent = ' Add Item';
+  submitBtn.style.backgroundColor = '#333';
+
+  form.reset();
 }
 
 // Initialize app
